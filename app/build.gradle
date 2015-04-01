@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+android {
+    signingConfigs {
+        config {
+            keyAlias 'healthchallenge'
+            keyPassword 'm00nr1s1n@'
+            storeFile file('C:/Users/Rico en Paula/android.keystore.jks')
+            storePassword 'm00nr1s1n@'
+        }
+    }
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+    defaultConfig {
+        applicationId "nl.healthchallenge.android.applite"
+        minSdkVersion 19
+        targetSdkVersion 19
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+dependencies {
+    compile "com.google.android.gms:play-services:3.1.+"
+    compile "com.android.support:support-v4:19.0.0"
+}

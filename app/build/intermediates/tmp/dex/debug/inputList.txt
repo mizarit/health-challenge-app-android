@@ -1,0 +1,3 @@
+C:\Users\Rico en Paula\AndroidstudioProjects\OAAppLite\app\build\intermediates\classes\debug
+C:\Users\Rico en Paula\AndroidstudioProjects\OAAppLite\app\build\intermediates\pre-dexed\debug\classes-07bbd3d2f0ef98584a6eac25ace5cfb7a326cc0e.jar
+C:\Users\Rico en Paula\AndroidstudioProjects\OAAppLite\app\build\intermediates\pre-dexed\debug\support-v4-19.0.0-da4e39856ab8425842549f6044bef1a3e3667fe3.jar
