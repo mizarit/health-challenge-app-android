@@ -76,3 +76,4 @@ class AndroidJS {
         return myContext.getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 }
+
