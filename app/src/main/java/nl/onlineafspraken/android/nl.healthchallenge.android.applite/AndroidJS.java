@@ -71,7 +71,6 @@ class AndroidJS {
         String setting = prefs.getString(key, "");
         return setting;
     }
-/** GitHub test **/
 
     private SharedPreferences getMySharedPreferences(Context context) {
         return myContext.getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE);
