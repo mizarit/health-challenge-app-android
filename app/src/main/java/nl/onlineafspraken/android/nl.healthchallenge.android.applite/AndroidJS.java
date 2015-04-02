@@ -15,6 +15,9 @@ class AndroidJS {
     Context myContext;
     public static final String PROPERTY_PAYLOAD = "payload";
     public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
+    public static final String PROPERTY_USE_SOUND = "sound";
+    public static final String PROPERTY_USE_VIBRATE = "vibrate";
+    public static final String PROPERTY_USE_NOTIFICATIONS = "notifications";
 
     public AndroidJS(Context context) {
         myContext = context;
@@ -80,6 +83,31 @@ class AndroidJS {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
         editor.commit();
+
+        switch(key){
+            case "sound":
+                if (value.equals("1")) {
+                    beep();
+                }
+                break;
+
+            case "vibrate":
+                if (value.equals("1")) {
+                    vibrate(500);
+                }
+                break;
+
+            case "notifications":
+                if (value.equals("1")) {
+                    if(prefs.getString(PROPERTY_USE_SOUND,"1").equals("1")) {
+                        beep();
+                    }
+                    if(prefs.getString(PROPERTY_USE_VIBRATE,"1").equals("1")) {
+                        vibrate(500);
+                    }
+                }
+                break;
+        }
     }
 
     @JavascriptInterface
