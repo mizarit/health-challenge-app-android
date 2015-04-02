@@ -29,6 +29,7 @@ public class GcmIntentService extends IntentService {
     public static final String PROPERTY_USE_SOUND = "sound";
     public static final String PROPERTY_USE_VIBRATE = "vibrate";
     public static final String PROPERTY_USE_NOTIFICATIONS = "notifications";
+    public static final String PROPERTY_MUTE_NOTIFICATIONS = "notifications_mute";
     public Handler mHandler;
     Context context;
 
@@ -57,45 +58,42 @@ public class GcmIntentService extends IntentService {
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
                 final SharedPreferences prefs = getMySharedPreferences(context);
+                SharedPreferences.Editor editor = prefs.edit();
 
                 if (extras.containsKey("payload")) {
                     Log.i(TAG, "Payload: " + extras.toString());
 
-                    SharedPreferences.Editor editor = prefs.edit();
                     editor.putString(PROPERTY_PAYLOAD, extras.getString("payload"));
                     editor.putString(PROPERTY_PAYLOAD_ARGS, extras.getString("payload_args"));
                     editor.commit();
-
-                    /*
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), extras.getString("payload"), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    */
                 }
                 else {
                     // Post notification of received message.
                     Log.i(TAG, "Received: " + extras.toString());
-                    if(prefs.getString(PROPERTY_USE_NOTIFICATIONS, "1").equals("1")) {
-                        sendNotification(extras.getString("message"));
+                    if(!prefs.getString(PROPERTY_MUTE_NOTIFICATIONS, "0").equals("1")) {
+                        if (prefs.getString(PROPERTY_USE_NOTIFICATIONS, "1").equals("1")) {
+                            sendNotification(extras.getString("message"));
 
-                        if (prefs.getString(PROPERTY_USE_VIBRATE, "1").equals("1")) {
-                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            v.vibrate(500);
+                            if (prefs.getString(PROPERTY_USE_VIBRATE, "1").equals("1")) {
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                v.vibrate(500);
+                            }
+
+                            if (prefs.getString(PROPERTY_USE_SOUND, "1").equals("1")) {
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
+                                        mp.start();
+                                    }
+                                });
+                            }
                         }
 
-                        if (prefs.getString(PROPERTY_USE_SOUND, "1").equals("1")) {
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                    MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
-                                    mp.start();
-                                }
-                            });
-                        }
+                        // mute any following notification until app is opened or resumed again
+                        editor.putString(PROPERTY_MUTE_NOTIFICATIONS, "1");
+                        editor.commit();
                     }
                 }
             }

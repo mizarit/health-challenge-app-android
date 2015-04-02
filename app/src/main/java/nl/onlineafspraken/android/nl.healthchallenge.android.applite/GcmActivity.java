@@ -24,6 +24,7 @@ public class GcmActivity extends SensorActivity
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public static final String PROPERTY_MUTE_NOTIFICATIONS = "notifications_mute";
     String SENDER_ID = "567105785293";
     static final String TAG = "HealthChallengeGCM";
     TextView mDisplay;
@@ -61,6 +62,31 @@ public class GcmActivity extends SensorActivity
         checkPlayServices();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancelAll();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        // unmute notifications
+        final SharedPreferences prefs = getGcmPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_MUTE_NOTIFICATIONS, "0");
+        editor.commit();
+
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        // unmute notifications
+        final SharedPreferences prefs = getGcmPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_MUTE_NOTIFICATIONS, "0");
+        editor.commit();
+
+        super.onDestroy();
     }
 
     /**
