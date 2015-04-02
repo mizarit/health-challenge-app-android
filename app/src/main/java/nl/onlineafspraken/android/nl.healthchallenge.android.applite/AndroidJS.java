@@ -14,6 +14,7 @@ import java.util.PriorityQueue;
 class AndroidJS {
     Context myContext;
     public static final String PROPERTY_PAYLOAD = "payload";
+    public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
 
     public AndroidJS(Context context) {
         myContext = context;
@@ -55,6 +56,23 @@ class AndroidJS {
     }
 
     @JavascriptInterface
+    public String getPayloadArgs()
+    {
+
+        final SharedPreferences prefs = getMySharedPreferences(myContext);
+        String payload_args = prefs.getString(PROPERTY_PAYLOAD_ARGS, "");
+        if (!payload_args.isEmpty()) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(PROPERTY_PAYLOAD_ARGS, "");
+            editor.commit();
+
+            return payload_args.toString();
+        }
+
+        return "";
+    }
+
+    @JavascriptInterface
     public void setSetting(String key, String value)
     {
         final SharedPreferences prefs = getMySharedPreferences(myContext);
@@ -76,4 +94,3 @@ class AndroidJS {
         return myContext.getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 }
-

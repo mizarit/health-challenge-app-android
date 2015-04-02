@@ -32,6 +32,9 @@ public class Main extends GcmActivity {
 
     static final String TAG = "HealthChallenge";
 
+    public static final String PROPERTY_PAYLOAD = "payload";
+    public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
+
     nl.healthchallenge.android.applite.AndroidJS myAndroidJS;
 
     /** Called when the activity is first created. */
@@ -42,6 +45,8 @@ public class Main extends GcmActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.main );
+
+        final SharedPreferences prefs = getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE);
 
         initGCM();
         hasSensor = (initSensors() != null);
@@ -90,6 +95,52 @@ public class Main extends GcmActivity {
         }
 
         myWebView.loadUrl(url);
+
+        (new Thread(new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                while (!Thread.interrupted())
+                    try
+                    {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() // start actions in UI thread
+                        {
+
+                            @Override
+                            public void run()
+                            {
+
+
+                                String payload = prefs.getString(PROPERTY_PAYLOAD, "");
+                                String payload_args = prefs.getString(PROPERTY_PAYLOAD_ARGS, "");
+                                if (!payload.isEmpty()) {
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putString(PROPERTY_PAYLOAD, "");
+                                    editor.putString(PROPERTY_PAYLOAD_ARGS, "");
+                                    editor.commit();
+
+                                    Log.i(TAG, payload.toString());
+                                    Log.i(TAG, payload_args.toString());
+
+                                    String javascript = "javascript:"+payload.toString()+"("+payload_args.toString()+");";
+                                    Log.i(TAG, javascript);
+                                    myWebView.loadUrl(javascript);
+
+
+                                }
+                            }
+                        });
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // ooops
+                    }
+            }
+        })).start(); // the while thread will start in BG thread
+
     }
 
     @Override

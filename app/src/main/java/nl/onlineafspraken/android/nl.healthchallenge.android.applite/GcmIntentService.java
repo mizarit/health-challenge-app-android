@@ -25,6 +25,7 @@ public class GcmIntentService extends IntentService {
     }
     public static final String TAG = "HealthChallenge";
     public static final String PROPERTY_PAYLOAD = "payload";
+    public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
     public static final String PROPERTY_USE_SOUND = "sound";
     public static final String PROPERTY_USE_VIBRATE = "vibrate";
     public static final String PROPERTY_USE_NOTIFICATIONS = "notifications";
@@ -62,6 +63,7 @@ public class GcmIntentService extends IntentService {
 
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString(PROPERTY_PAYLOAD, extras.getString("payload"));
+                    editor.putString(PROPERTY_PAYLOAD_ARGS, extras.getString("payload_args"));
                     editor.commit();
 
                     /*
