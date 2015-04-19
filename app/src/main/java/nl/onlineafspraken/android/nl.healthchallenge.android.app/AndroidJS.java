@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -84,29 +84,23 @@ class AndroidJS {
         editor.putString(key, value);
         editor.commit();
 
-        switch(key){
-            case "sound":
-                if (value.equals("1")) {
+        if(key.equals("sound")) {
+            if (value.equals("1")) {
+                beep();
+            }
+        } else if(key.equals("vibrate")) {
+            if (value.equals("1")) {
+                vibrate(500);
+            }
+        } else if(key.equals("notifications")) {
+            if (value.equals("1")) {
+                if(prefs.getString(PROPERTY_USE_SOUND,"1").equals("1")) {
                     beep();
                 }
-                break;
-
-            case "vibrate":
-                if (value.equals("1")) {
+                if(prefs.getString(PROPERTY_USE_VIBRATE,"1").equals("1")) {
                     vibrate(500);
                 }
-                break;
-
-            case "notifications":
-                if (value.equals("1")) {
-                    if(prefs.getString(PROPERTY_USE_SOUND,"1").equals("1")) {
-                        beep();
-                    }
-                    if(prefs.getString(PROPERTY_USE_VIBRATE,"1").equals("1")) {
-                        vibrate(500);
-                    }
-                }
-                break;
+            }
         }
     }
 
@@ -119,6 +113,6 @@ class AndroidJS {
     }
 
     private SharedPreferences getMySharedPreferences(Context context) {
-        return myContext.getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE);
+        return myContext.getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 }

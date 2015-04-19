@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import android.app.IntentService;
@@ -15,6 +15,8 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.os.Vibrator;
+
+import nl.healthchallenge.android.app.Main;
 
 public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;

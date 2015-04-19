@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -14,7 +14,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import nl.healthchallenge.android.applite.SensorActivity;
+import nl.healthchallenge.android.app.SensorActivity;
 
 public class GcmActivity extends SensorActivity
 {

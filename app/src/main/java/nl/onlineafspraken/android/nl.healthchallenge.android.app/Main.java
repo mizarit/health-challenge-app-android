@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,10 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import nl.healthchallenge.android.applite.AndroidJS;
-import nl.healthchallenge.android.applite.CustomWebViewClient;
-import nl.healthchallenge.android.applite.GcmActivity;
-import nl.healthchallenge.android.applite.SensorActivity;
+import nl.healthchallenge.android.app.AndroidJS;
+import nl.healthchallenge.android.app.CustomWebViewClient;
+import nl.healthchallenge.android.app.GcmActivity;
+import nl.healthchallenge.android.app.SensorActivity;
 
 public class Main extends GcmActivity {
 	WebView myWebView;
@@ -35,7 +35,7 @@ public class Main extends GcmActivity {
     public static final String PROPERTY_PAYLOAD = "payload";
     public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
 
-    nl.healthchallenge.android.applite.AndroidJS myAndroidJS;
+    nl.healthchallenge.android.app.AndroidJS myAndroidJS;
 
     /** Called when the activity is first created. */
     @Override
@@ -46,7 +46,7 @@ public class Main extends GcmActivity {
 
         setContentView(R.layout.main );
 
-        final SharedPreferences prefs = getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE);
+        final SharedPreferences prefs = getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
 
         initGCM();
         hasSensor = (initSensors() != null);
@@ -82,10 +82,10 @@ public class Main extends GcmActivity {
 
         myWebView.setWebViewClient(new CustomWebViewClient() { });
 
-        myAndroidJS = new nl.healthchallenge.android.applite.AndroidJS(getApplicationContext());
+        myAndroidJS = new nl.healthchallenge.android.app.AndroidJS(getApplicationContext());
         myWebView.addJavascriptInterface(myAndroidJS, "Android");
 
-        String url = this.getString(R.string.app_url_alt);
+        String url = this.getString(R.string.app_url);
         url = url.concat("?device=android");
         if (checkPlayServices()) {
             url = url.concat("&android_id=").concat(regid);
@@ -112,7 +112,6 @@ public class Main extends GcmActivity {
                             @Override
                             public void run()
                             {
-
 
                                 String payload = prefs.getString(PROPERTY_PAYLOAD, "");
                                 String payload_args = prefs.getString(PROPERTY_PAYLOAD_ARGS, "");
