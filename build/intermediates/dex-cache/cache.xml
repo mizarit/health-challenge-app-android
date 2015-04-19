@@ -2,18 +2,18 @@
 <items version="2" >
 
     <item
-        jar="E:\android-sdk-windows\extras\android\m2repository\com\android\support\support-v4\19.0.0\support-v4-19.0.0.jar"
+        jar="C:\Users\Rico en Paula\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.0.0\support-v4-19.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="afee690af14bd2c32d400cdf78e746fd45c386fa">
-        <dex dex="C:\Users\Rico en Paula\AndroidstudioProjects\OAAppLite\app\build\intermediates\pre-dexed\debug\support-v4-19.0.0-da4e39856ab8425842549f6044bef1a3e3667fe3.jar" />
+        <dex dex="C:\Users\Rico en Paula\Documents\GitHub\HealthChallengeAndroid\health-challenge-app-android\app\build\intermediates\pre-dexed\debug\support-v4-19.0.0-bb0403bbb25b3e73cbec4fb3c0f71fd0a0eb4f9a.jar" />
     </item>
     <item
-        jar="C:\Users\Rico en Paula\AndroidstudioProjects\OAAppLite\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\3.1.59\classes.jar"
+        jar="C:\Users\Rico en Paula\Documents\GitHub\HealthChallengeAndroid\health-challenge-app-android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\3.1.59\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="2dd7b1a9ea65bb03d9cd16df777eeaf537a1fc81">
-        <dex dex="C:\Users\Rico en Paula\AndroidstudioProjects\OAAppLite\app\build\intermediates\pre-dexed\debug\classes-07bbd3d2f0ef98584a6eac25ace5cfb7a326cc0e.jar" />
+        <dex dex="C:\Users\Rico en Paula\Documents\GitHub\HealthChallengeAndroid\health-challenge-app-android\app\build\intermediates\pre-dexed\debug\classes-a6c1b0ba2f55174d068e53f8e90d53c4d3a75242.jar" />
     </item>
 
 </items>
