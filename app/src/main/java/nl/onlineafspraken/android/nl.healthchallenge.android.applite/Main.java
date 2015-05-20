@@ -1,7 +1,12 @@
-package nl.healthchallenge.android.app;
+package nl.healthchallenge.android.applite;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,10 +22,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import nl.healthchallenge.android.app.AndroidJS;
-import nl.healthchallenge.android.app.CustomWebViewClient;
-import nl.healthchallenge.android.app.GcmActivity;
-import nl.healthchallenge.android.app.SensorActivity;
+import nl.healthchallenge.android.applite.AndroidJS;
+import nl.healthchallenge.android.applite.CustomWebViewClient;
+import nl.healthchallenge.android.applite.GcmActivity;
+import nl.healthchallenge.android.applite.SensorActivity;
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 
 public class Main extends GcmActivity {
 	WebView myWebView;
@@ -30,12 +40,12 @@ public class Main extends GcmActivity {
     Context context;
     boolean hasSensor;
 
+    private SensorManager mSensorManager;
+    private Sensor mStepCounterSensor;
+
     static final String TAG = "HealthChallenge";
 
-    public static final String PROPERTY_PAYLOAD = "payload";
-    public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
-
-    nl.healthchallenge.android.app.AndroidJS myAndroidJS;
+    nl.healthchallenge.android.applite.AndroidJS myAndroidJS;
 
     /** Called when the activity is first created. */
     @Override
@@ -45,8 +55,6 @@ public class Main extends GcmActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.main );
-
-        final SharedPreferences prefs = getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
 
         initGCM();
         hasSensor = (initSensors() != null);
@@ -82,7 +90,7 @@ public class Main extends GcmActivity {
 
         myWebView.setWebViewClient(new CustomWebViewClient() { });
 
-        myAndroidJS = new nl.healthchallenge.android.app.AndroidJS(getApplicationContext());
+        myAndroidJS = new nl.healthchallenge.android.applite.AndroidJS(getApplicationContext());
         myWebView.addJavascriptInterface(myAndroidJS, "Android");
 
         String url = this.getString(R.string.app_url_alt);
@@ -94,52 +102,17 @@ public class Main extends GcmActivity {
             url = url.concat("&sensor=1");
         }
 
+        int steps = getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE).getInt("pedometer", 0);
+        Log.i(TAG, "Steps from cache: " + String.valueOf(steps));
+
+        if (hasSensor) {
+            Log.i(TAG, "Starting service");
+            Intent intent = new Intent(this, nl.healthchallenge.android.applite.SensorListener.class);
+            startService(intent);
+        }
+
+        Log.i(TAG, url);
         myWebView.loadUrl(url);
-
-        (new Thread(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
-                while (!Thread.interrupted())
-                    try
-                    {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() // start actions in UI thread
-                        {
-
-                            @Override
-                            public void run()
-                            {
-
-                                String payload = prefs.getString(PROPERTY_PAYLOAD, "");
-                                String payload_args = prefs.getString(PROPERTY_PAYLOAD_ARGS, "");
-                                if (!payload.isEmpty()) {
-                                    SharedPreferences.Editor editor = prefs.edit();
-                                    editor.putString(PROPERTY_PAYLOAD, "");
-                                    editor.putString(PROPERTY_PAYLOAD_ARGS, "");
-                                    editor.commit();
-
-                                    Log.i(TAG, payload.toString());
-                                    Log.i(TAG, payload_args.toString());
-
-                                    String javascript = "javascript:"+payload.toString()+"("+payload_args.toString()+");";
-                                    Log.i(TAG, javascript);
-                                    myWebView.loadUrl(javascript);
-
-
-                                }
-                            }
-                        });
-                    }
-                    catch (InterruptedException e)
-                    {
-                        // ooops
-                    }
-            }
-        })).start(); // the while thread will start in BG thread
-
     }
 
     @Override
