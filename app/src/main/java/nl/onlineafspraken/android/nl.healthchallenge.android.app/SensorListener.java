@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -56,7 +56,7 @@ public class SensorListener extends Service implements SensorEventListener {
                 value = (int) values[0];
             }
             if (sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE).edit().putInt("pedometer", value).commit();
+                getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE).edit().putInt("pedometer", value).commit();
                 //Log.i(TAG, "Steps from service "+ String.valueOf(value));
             }
         }
@@ -71,7 +71,7 @@ public class SensorListener extends Service implements SensorEventListener {
                     try {
 
 
-                        SharedPreferences prefs = getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_MULTI_PROCESS);
+                        SharedPreferences prefs = getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_MULTI_PROCESS);
                         Log.i(TAG, "Steps by timed service: "+ String.valueOf(prefs.getInt("pedometer", 0)));
                         String url = getApplicationContext().getString(R.string.app_url_alt);
                         url = url.concat("/main/externalPush?device=android");
@@ -121,7 +121,7 @@ public class SensorListener extends Service implements SensorEventListener {
         }
         // restart service every hour to get the current step count
         ((AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE))
-                .set(AlarmManager.RTC, System.currentTimeMillis() + 60000,//AlarmManager.INTERVAL_HOUR,
+                .set(AlarmManager.RTC, System.currentTimeMillis() + 300000,//AlarmManager.INTERVAL_HOUR, // 5 minute
                         PendingIntent.getService(getApplicationContext(), 2,
                                 new Intent(this, SensorListener.class),
                                 PendingIntent.FLAG_UPDATE_CURRENT));

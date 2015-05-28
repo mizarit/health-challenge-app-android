@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

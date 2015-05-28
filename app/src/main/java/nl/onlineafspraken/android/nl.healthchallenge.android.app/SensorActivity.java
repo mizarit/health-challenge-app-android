@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.app.Activity;
 import android.content.Context;
@@ -45,7 +45,7 @@ public class SensorActivity extends Activity implements SensorEventListener
             String javascript = "javascript:totalSteps("+value+");";
             myWebView.loadUrl(javascript);
 
-           getSharedPreferences(nl.healthchallenge.android.applite.Main.class.getSimpleName(), Context.MODE_PRIVATE).edit().putInt("pedometer", value).commit();
+           getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE).edit().putInt("pedometer", value).commit();
 
         } else if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             //Log.i(TAG, "Step Detector Detected : " + value);

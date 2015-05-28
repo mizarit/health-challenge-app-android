@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import android.app.IntentService;
@@ -38,7 +38,7 @@ public class GcmIntentService extends IntentService {
     }
 
     private SharedPreferences getMySharedPreferences(Context context) {
-        return getSharedPreferences(Main.class.getSimpleName(), Context.MODE_PRIVATE);
+        return getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class GcmIntentService extends IntentService {
             }
         }
 // Release the wake lock provided by the WakefulBroadcastReceiver.
-        GcmBroadcastReceiver.completeWakefulIntent(intent);
+        nl.healthchallenge.android.app.GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     private void sendNotification(String msg) {
@@ -107,7 +107,7 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, Main.class), 0);
+                new Intent(this, nl.healthchallenge.android.app.Main.class), 0);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon)

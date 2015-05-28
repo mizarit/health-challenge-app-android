@@ -1,4 +1,4 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -73,6 +73,6 @@ class AndroidJS {
     }
 
     private SharedPreferences getMySharedPreferences(Context context) {
-        return myContext.getSharedPreferences(Main.class.getSimpleName(), Context.MODE_PRIVATE);
+        return myContext.getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 }

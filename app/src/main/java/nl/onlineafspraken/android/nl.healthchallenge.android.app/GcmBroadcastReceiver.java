@@ -1,11 +1,11 @@
-package nl.healthchallenge.android.applite;
+package nl.healthchallenge.android.app;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import nl.healthchallenge.android.applite.GcmIntentService;
+import nl.healthchallenge.android.app.GcmIntentService;
 /**
  * This {@code WakefulBroadcastReceiver} takes care of creating and managing a
  * partial wake lock for your app. It passes off the work of processing the GCM
