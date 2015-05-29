@@ -61,6 +61,7 @@ class AndroidJS {
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
+
         editor.commit();
     }
 

@@ -133,76 +133,6 @@ public class Main extends GcmActivity {
 
 
         myWebView.setWebChromeClient(new WebChromeClient() {
-
-            // openFileChooser for Android 3.0+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType){
-
-                // Update message
-                mUploadMessage = uploadMsg;
-
-                try{
-
-                    // Create AndroidExampleFolder at sdcard
-
-                    File imageStorageDir = new File(
-                            Environment.getExternalStoragePublicDirectory(
-                                    Environment.DIRECTORY_PICTURES)
-                            , "AndroidExampleFolder");
-
-                    if (!imageStorageDir.exists()) {
-                        // Create AndroidExampleFolder at sdcard
-                        imageStorageDir.mkdirs();
-                    }
-
-                    // Create camera captured image file path and name
-                    File file = new File(
-                            imageStorageDir + File.separator + "IMG_"
-                                    + String.valueOf(System.currentTimeMillis())
-                                    + ".jpg");
-
-                    mCapturedImageURI = Uri.fromFile(file);
-
-                    // Camera capture image intent
-                    final Intent captureIntent = new Intent(
-                            android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
-                    captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-
-                    Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                    i.addCategory(Intent.CATEGORY_OPENABLE);
-                    i.setType("image/*");
-
-                    // Create file chooser intent
-                    Intent chooserIntent = Intent.createChooser(i, "Image Chooser");
-
-                    // Set camera intent to file chooser
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS
-                            , new Parcelable[] { captureIntent });
-
-                    // On select image call onActivityResult method of activity
-                    startActivityForResult(chooserIntent, FILECHOOSER_RESULTCODE);
-
-                }
-                catch(Exception e){
-                    Toast.makeText(getBaseContext(), "Exception:"+e,
-                            Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-            // openFileChooser for Android < 3.0
-            public void openFileChooser(ValueCallback<Uri> uploadMsg){
-                openFileChooser(uploadMsg, "");
-            }
-
-            //openFileChooser for other Android versions
-            public void openFileChooser(ValueCallback<Uri> uploadMsg,
-                                        String acceptType,
-                                        String capture) {
-
-                openFileChooser(uploadMsg, acceptType);
-            }
-
             public void onProgressChanged(WebView view, int progress) {
                 myProgressBar.setProgress(progress);
 
@@ -265,4 +195,14 @@ public class Main extends GcmActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        myWebView = (WebView) findViewById(R.id.webview);
+        try {
+            String javascript = "javascript:loadDataset();";
+            myWebView.loadUrl(javascript);
+        }
+        catch (Exception e) {}
+    }
 }
