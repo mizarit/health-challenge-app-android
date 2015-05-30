@@ -58,6 +58,7 @@ public class Main extends GcmActivity {
     public static final String PROPERTY_PAYLOAD = "payload";
     public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
     public static final String PROPERTY_BASEURL = "baseurl";
+    public static final String PROPERTY_BACK_CALLBACK = "back_callback";
 
     private static final int REQUEST_CODE = 6666; // onActivityResult request code
 
@@ -132,8 +133,6 @@ public class Main extends GcmActivity {
         webSettings.setAllowFileAccess(true);
         webSettings.setAppCachePath(appCachePath);
 
-
-
         myWebView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 myProgressBar.setProgress(progress);
@@ -148,12 +147,27 @@ public class Main extends GcmActivity {
 
         myWebView.setWebViewClient(new CustomWebViewClient() { });
 
+        // disable text selection
+        myWebView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+        myWebView.setLongClickable(false);
+
+        // disable the vibrate feedback on long clicks
+        myWebView.setHapticFeedbackEnabled(false);
+
+        // import Android javascript object
+        // todo: rename to Native
         myAndroidJS = new nl.healthchallenge.android.app.AndroidJS(getApplicationContext(), this);
         myWebView.addJavascriptInterface(myAndroidJS, "Android");
 
+        // load the base url for the app
+        // todo: support local static version when value is 'internal'
         final SharedPreferences prefs = getApplicationContext().getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
         String url = prefs.getString(PROPERTY_BASEURL, this.getString(R.string.app_url_alt));
-        //String url = this.getString(R.string.app_url_alt);
 
         url = url.concat("?device=android");
         if (checkPlayServices()) {
@@ -163,8 +177,8 @@ public class Main extends GcmActivity {
             url = url.concat("&sensor=1");
         }
 
-        int steps = getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE).getInt("pedometer", 0);
-        Log.i(TAG, "Steps from cache: " + String.valueOf(steps));
+        //int steps = getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE).getInt("pedometer", 0);
+        //Log.i(TAG, "Steps from cache: " + String.valueOf(steps));
 
         if (hasSensor) {
             Log.i(TAG, "Starting service");
@@ -200,8 +214,8 @@ public class Main extends GcmActivity {
                                     editor.putString(PROPERTY_PAYLOAD_ARGS, "");
                                     editor.commit();
 
-                                    Log.i(TAG, payload.toString());
-                                    Log.i(TAG, payload_args.toString());
+                                    //Log.i(TAG, payload.toString());
+                                    //Log.i(TAG, payload_args.toString());
 
                                     String javascript = "javascript:"+payload.toString()+"("+payload_args.toString()+");";
                                     Log.i(TAG, javascript);
@@ -229,7 +243,19 @@ public class Main extends GcmActivity {
                     if(myWebView.canGoBack()){
                         myWebView.goBack();
                     }else{
-                        finish();
+                        final SharedPreferences prefs = getApplicationContext().getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
+                        String back_callback = prefs.getString(PROPERTY_BACK_CALLBACK, "");
+                        if(back_callback.length() > 0) {
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString(PROPERTY_BACK_CALLBACK, "");
+                            editor.commit();
+                            String javascript = "javascript:"+back_callback;
+                            Log.i(TAG, javascript);
+                            myWebView.loadUrl(javascript);
+                        }
+                        else {
+                            finish();
+                        }
                     }
                     return true;
             }

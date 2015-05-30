@@ -40,16 +40,16 @@ public class GcmActivity extends SensorActivity
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(context);
             if (regid.isEmpty()) {
-                Log.i(TAG, "Register app with Google Play Services.");
+                //Log.i(TAG, "Register app with Google Play Services.");
                 registerInBackground();
             }
             else {
-                Log.i(TAG, "Google Play Services regId");
-                Log.i(TAG, regid);
+                //Log.i(TAG, "Google Play Services regId");
+                //Log.i(TAG, regid);
             }
 
         } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
+            //Log.i(TAG, "No valid Google Play Services APK found.");
         }
 
         mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);

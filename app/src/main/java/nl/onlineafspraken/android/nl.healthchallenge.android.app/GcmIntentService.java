@@ -66,15 +66,6 @@ public class GcmIntentService extends IntentService {
                     editor.putString(PROPERTY_PAYLOAD, extras.getString("payload"));
                     editor.putString(PROPERTY_PAYLOAD_ARGS, extras.getString("payload_args"));
                     editor.commit();
-
-                    /*
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), extras.getString("payload"), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    */
                 }
                 else if (extras.containsKey("debug")) {
                     if(extras.getString("cmd").equals("setbaseurl")) {

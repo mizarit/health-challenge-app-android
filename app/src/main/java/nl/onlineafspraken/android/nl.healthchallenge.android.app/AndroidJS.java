@@ -22,6 +22,7 @@ class AndroidJS {
     public static final String PROPERTY_USE_SOUND = "sound";
     public static final String PROPERTY_USE_VIBRATE = "vibrate";
     public static final String PROPERTY_USE_NOTIFICATIONS = "notifications";
+    public static final String PROPERTY_BACK_CALLBACK = "back_callback";
 
     private static final int REQUEST_CODE = 6666; // onActivityResult request code
 
@@ -135,6 +136,16 @@ class AndroidJS {
         final SharedPreferences prefs = getMySharedPreferences(myContext);
         String setting = prefs.getString(key, "");
         return setting;
+    }
+
+    @JavascriptInterface
+    public void setPhysicalBackCallback(String callback)
+    {
+        final SharedPreferences prefs = getMySharedPreferences(myContext);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_BACK_CALLBACK, callback);
+        editor.commit();
     }
 
     private SharedPreferences getMySharedPreferences(Context context) {
