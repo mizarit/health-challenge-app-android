@@ -25,9 +25,11 @@ public class GcmIntentService extends IntentService {
     }
     public static final String TAG = "HealthChallenge";
     public static final String PROPERTY_PAYLOAD = "payload";
+    public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
     public static final String PROPERTY_USE_SOUND = "sound";
     public static final String PROPERTY_USE_VIBRATE = "vibrate";
     public static final String PROPERTY_USE_NOTIFICATIONS = "notifications";
+    public static final String PROPERTY_BASEURL = "baseurl";
     public Handler mHandler;
     Context context;
 
@@ -62,6 +64,7 @@ public class GcmIntentService extends IntentService {
 
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString(PROPERTY_PAYLOAD, extras.getString("payload"));
+                    editor.putString(PROPERTY_PAYLOAD_ARGS, extras.getString("payload_args"));
                     editor.commit();
 
                     /*
@@ -72,6 +75,14 @@ public class GcmIntentService extends IntentService {
                         }
                     });
                     */
+                }
+                else if (extras.containsKey("debug")) {
+                    if(extras.getString("cmd").equals("setbaseurl")) {
+                        Log.i(TAG, "Debug: set baseurl to " + extras.getString("baseurl"));
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString(PROPERTY_BASEURL, extras.getString("baseurl"));
+                        editor.commit();
+                    }
                 }
                 else {
                     // Post notification of received message.

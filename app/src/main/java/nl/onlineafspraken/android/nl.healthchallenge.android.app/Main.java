@@ -51,6 +51,10 @@ public class Main extends GcmActivity {
     Context context;
     boolean hasSensor;
 
+    public static final String PROPERTY_PAYLOAD = "payload";
+    public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
+    public static final String PROPERTY_BASEURL = "baseurl";
+
     final Activity activity = this;
     public Uri imageUri;
 
@@ -146,10 +150,13 @@ public class Main extends GcmActivity {
 
         myWebView.setWebViewClient(new CustomWebViewClient() { });
 
-        myAndroidJS = new nl.healthchallenge.android.app.AndroidJS(getApplicationContext());
+        myAndroidJS = new nl.healthchallenge.android.app.AndroidJS(getApplicationContext(), this);
         myWebView.addJavascriptInterface(myAndroidJS, "Android");
 
-        String url = this.getString(R.string.app_url_alt);
+        final SharedPreferences prefs = getApplicationContext().getSharedPreferences(nl.healthchallenge.android.app.Main.class.getSimpleName(), Context.MODE_PRIVATE);
+        String url = prefs.getString(PROPERTY_BASEURL, this.getString(R.string.app_url_alt));
+        //String url = this.getString(R.string.app_url_alt);
+
         url = url.concat("?device=android");
         if (checkPlayServices()) {
             url = url.concat("&android_id=").concat(regid);
@@ -169,6 +176,50 @@ public class Main extends GcmActivity {
 
         Log.i(TAG, url);
         myWebView.loadUrl(url);
+
+        (new Thread(new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                while (!Thread.interrupted())
+                    try
+                    {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() // start actions in UI thread
+                        {
+
+                            @Override
+                            public void run()
+                            {
+
+                                String payload = prefs.getString(PROPERTY_PAYLOAD, "");
+                                String payload_args = prefs.getString(PROPERTY_PAYLOAD_ARGS, "");
+                                if (!payload.isEmpty()) {
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putString(PROPERTY_PAYLOAD, "");
+                                    editor.putString(PROPERTY_PAYLOAD_ARGS, "");
+                                    editor.commit();
+
+                                    Log.i(TAG, payload.toString());
+                                    Log.i(TAG, payload_args.toString());
+
+                                    String javascript = "javascript:"+payload.toString()+"("+payload_args.toString()+");";
+                                    Log.i(TAG, javascript);
+                                    myWebView.loadUrl(javascript);
+
+
+                                }
+                            }
+                        });
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // ooops
+                    }
+            }
+        })).start(); // the while thread will start in BG thread
     }
 
     @Override
