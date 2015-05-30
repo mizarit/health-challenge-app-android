@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +41,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -55,12 +59,9 @@ public class Main extends GcmActivity {
     public static final String PROPERTY_PAYLOAD_ARGS = "payload_args";
     public static final String PROPERTY_BASEURL = "baseurl";
 
-    final Activity activity = this;
-    public Uri imageUri;
+    private static final int REQUEST_CODE = 6666; // onActivityResult request code
 
-    private static final int FILECHOOSER_RESULTCODE   = 2888;
-    private ValueCallback<Uri> mUploadMessage;
-    private Uri mCapturedImageURI = null;
+    final Activity activity = this;
 
     private SensorManager mSensorManager;
     private Sensor mStepCounterSensor;
@@ -70,41 +71,38 @@ public class Main extends GcmActivity {
     nl.healthchallenge.android.app.AndroidJS myAndroidJS;
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if( requestCode == REQUEST_CODE) {
+            // If the file selection was successful
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    // Get the URI of the selected file
+                    final Uri uri = data.getData();
+                    Log.i(TAG, "Uri = " + uri.toString());
 
-        if(requestCode==FILECHOOSER_RESULTCODE)
-        {
+                    long imageId = Long.parseLong(uri.getLastPathSegment());
 
-            if (null == this.mUploadMessage) {
-                return;
+                    Log.i(TAG, Long.toString(imageId));
+                    Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                            getContentResolver(),
+                            imageId,
+                            MediaStore.Images.Thumbnails.MINI_KIND,
+                            (BitmapFactory.Options) null );
 
-            }
 
-            Uri result=null;
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    bitmap.recycle();
+                    bitmap = null;
 
-            try{
-                if (resultCode != RESULT_OK) {
+                    byte[] b = baos.toByteArray();
+                    String encodedImage= Base64.encodeToString(b, Base64.NO_WRAP);
 
-                    result = null;
-
-                } else {
-
-                    // retrieve from the private variable if the intent is null
-                    result = intent == null ? mCapturedImageURI : intent.getData();
+                    String javascript = "javascript:imageSelected('"+encodedImage+"');";
+                    myWebView.loadUrl(javascript);
                 }
             }
-            catch(Exception e)
-            {
-                Toast.makeText(getApplicationContext(), "activity :"+e,
-                        Toast.LENGTH_LONG).show();
-            }
-
-            mUploadMessage.onReceiveValue(result);
-            mUploadMessage = null;
-
         }
-
     }
 
     /** Called when the activity is first created. */
