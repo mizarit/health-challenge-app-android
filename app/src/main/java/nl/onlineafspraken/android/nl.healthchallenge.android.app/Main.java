@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -129,6 +130,9 @@ public class Main extends GcmActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            myWebView.setWebContentsDebuggingEnabled(true);
+        }
         String appCachePath = getApplicationContext().getCacheDir().getAbsolutePath();
         webSettings.setAllowFileAccess(true);
         webSettings.setAppCachePath(appCachePath);
